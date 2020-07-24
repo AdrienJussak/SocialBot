@@ -42,11 +42,15 @@ class TwitterStreamListener(tweepy.StreamListener):
     def stop_daemon(self):
         self.myStream.disconnect()
 
+    def is_running(self):
+        return self.myStream.running
+
     def on_status(self, status):
         if not hasattr(status, 'retweeted_status'):
             tweet_link = "https://twitter.com/" + status.user.screen_name + "/status/" + status.id_str
             self.discord.send_message(status.user.name + ' a tweeté : \n' + tweet_link)
 
     def on_error(self, status_code):
+        print('Twitter Error Code ' + str(status_code))
         if status_code == 420:
             raise TwitterException()
